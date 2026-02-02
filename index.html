@@ -74,13 +74,13 @@
         .header-disclaimer {
             margin-top: 20px;
             padding: 14px 18px;
-            background: #f0f5f3;  /* 淡米绿，和你的主色#5a7a6a协调 */
+            background: #f0f5f3;
             border-left: 3px solid var(--主色);
             border-radius: 0 8px 8px 0;
             text-align: left;
             font-size: 12px;
             line-height: 1.6;
-            color: #5a6a62;  /* 深灰绿文字 */
+            color: #5a6a62;
         }
         
         .header-disclaimer strong {
@@ -135,16 +135,18 @@
             box-shadow: 0 2px 8px rgba(90,122,106,0.3);
         }
 
-        /* ===== 卡片3的多链接网格（解决太丑问题） ===== */
+        /* 多链接网格 */
         .links-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 默认两列 */
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-top: 16px;
         }
 
         .link-item {
-            display: block;
+            display: flex;  /* 改成flex以便时间标签靠右 */
+            justify-content: space-between;
+            align-items: center;
             padding: 12px 16px;
             background-color: var(--悬停色);
             border: 1px solid #e8ebe9;
@@ -154,10 +156,8 @@
             font-size: 14px;
             font-weight: 500;
             transition: all 0.2s;
-            text-align: center;
+            text-align: left;  /* 左对齐标题 */
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .link-item:hover {
@@ -165,6 +165,23 @@
             color: white;
             border-color: var(--主色);
             transform: translateY(-2px);
+        }
+        
+        /* 时间标签默认隐藏，加载后显示 */
+        .file-time {
+            font-size: 11px;
+            color: #888;
+            background: rgba(0,0,0,0.04);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-weight: normal;
+            opacity: 0.7;
+        }
+        
+        .link-item:hover .file-time {
+            background: rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.9);
         }
 
         /* 使用说明卡片的内部样式 */
@@ -206,7 +223,7 @@
             font-size: 13px;
         }
 
-        /* 手机适配：链接变成单列，更好点按 */
+        /* 手机适配 */
         @media (max-width: 600px) {
             body {
                 padding: 16px;
@@ -218,7 +235,7 @@
             }
             
             .links-grid {
-                grid-template-columns: 1fr; /* 手机单列 */
+                grid-template-columns: 1fr;
             }
             
             h1 {
@@ -226,7 +243,6 @@
             }
         }
 
-        /* 分隔线（可选装饰） */
         .divider {
             height: 1px;
             background: linear-gradient(to right, transparent, var(--边框色), transparent);
@@ -238,18 +254,19 @@
 
     <div class="container">
         
-        <!-- 头部也框起来 -->
+        <!-- 头部 -->
         <div class="card header-card">
             <h1>📚 小c的anki笔记导航</h1>
             <p class="subtitle">许多anki学习笔记的传送门，点击卡片即可跳转</p>
 
-        <!-- 医疗免责声明 -->
-        <div class="header-disclaimer">
-            <strong>⚠️ 医疗免责声明</strong>
-            <p>本站所有内容仅供教育参考与信息分享，不构成医疗建议、诊断或治疗方案。浏览本站不建立医患关系，如有健康疑虑请咨询执业医疗人员。</p>
+            <!-- 医疗免责声明 -->
+            <div class="header-disclaimer">
+                <strong>⚠️ 医疗免责声明</strong>
+                <p>本站所有内容仅供教育参考与信息分享，不构成医疗建议、诊断或治疗方案。浏览本站不建立医患关系，如有健康疑虑请咨询执业医疗人员。</p>
+            </div>
         </div>
 
-        <!-- 卡片1：个人博客 -->
+        <!-- 卡片1：个人博客（外链，不显示自动时间，保持原样） -->
         <div class="card">
             <div class="card-title">📝 个人博客</div>
             <div class="card-desc">最初的主页，存放见闻思考和综合内容</div>
@@ -261,35 +278,37 @@
         <div class="card">
             <div class="card-title">✨ Anki可视化工具</div>
             <div class="card-desc">粘贴anki笔记自动排版，Claude写的实用工具</div>
-            <div class="card-meta">更新：2025-02-02</div>
+            <!-- 关键：加上 id="time-post2" 和 data-file，脚本会自动填入时间 -->
+            <div class="card-meta" id="time-post2" data-file="post2.html">获取时间中...</div>
             <a href="post2.html" class="btn">打开工具</a>
         </div>
 
-        <!-- 卡片3：Anki知识库（修复结构+美化布局） -->
+        <!-- 卡片3：Anki知识库 -->
         <div class="card">
             <div class="card-title">🎴 Anki知识库</div>
             <div class="card-desc">这学期Anki内容的可视化图表，预计十多个页面</div>
             <div class="card-desc" style="color: #999; font-size: 13px;">⚠️ 不用于任何临床诊断参考，仅供个人学习</div>
-            <div class="card-meta">更新：2025-02-02-19-25</div>
+            <!-- 这里显示最新一个文件的时间作为整体参考 -->
+            <div class="card-meta" id="time-main" style="margin-bottom: 12px;">同步时间计算中...</div>
             
-            <!-- 两列网格布局，告别堆叠 -->
-            <div class="card-desc">大四寒假</div>
+            <div class="card-desc" style="margin-top: 16px; font-weight: 600; color: var(--主色);">大四寒假</div>
             <div class="links-grid">
-                <a href="post11.html" class="link-item">github·基础名词</a>
-                <a href="post12.html" class="link-item">github·非开发者</a>
-                <a href="post12.html" class="link-item">github·个人博客</a>
-            <br>
-            <div class="card-desc">大四下</div>
-            <br>
+                <!-- 关键：每个链接加 data-file="文件名.html"，时间会自动显示在右侧 -->
+                <a href="post11.html" class="link-item" data-file="post11.html">github·基础名词</a>
+                <a href="post12.html" class="link-item" data-file="post12.html">github·非开发者</a>
+                <a href="post13.html" class="link-item" data-file="post13.html">github·个人博客</a>
+            </div>
+
+            <div class="card-desc" style="margin-top: 20px; font-weight: 600; color: var(--主色);">大四下</div>
             <div class="links-grid">
-                <a href="post3.html" class="link-item">神经系统·名词解释</a>
-                <a href="post4.html" class="link-item">神经系统·大题</a>
-                <a href="post5.html" class="link-item">儿科学·名词解释</a>
-                <a href="post6.html" class="link-item">儿科学·大题</a>
-                <a href="post7.html" class="link-item">传染病学·名词解释</a>
-                <a href="post8.html" class="link-item">传染病学·大题</a>
-                <a href="post9.html" class="link-item">全科医学·名词解释</a>
-                <a href="post10.html" class="link-item">全科医学·大题</a>
+                <a href="post3.html" class="link-item" data-file="post3.html">神经系统·名词解释</a>
+                <a href="post4.html" class="link-item" data-file="post4.html">神经系统·大题</a>
+                <a href="post5.html" class="link-item" data-file="post5.html">儿科学·名词解释</a>
+                <a href="post6.html" class="link-item" data-file="post6.html">儿科学·大题</a>
+                <a href="post7.html" class="link-item" data-file="post7.html">传染病学·名词解释</a>
+                <a href="post8.html" class="link-item" data-file="post8.html">传染病学·大题</a>
+                <a href="post9.html" class="link-item" data-file="post9.html">全科医学·名词解释</a>
+                <a href="post10.html" class="link-item" data-file="post10.html">全科医学·大题</a>
             </div>
         </div>
 
@@ -298,14 +317,113 @@
         <!-- 使用说明 -->
         <div class="card guide-card">
             <div class="guide-title">🔧 如何添加新的笔记链接？</div>
-            <div class="guide-step" data-num="1.">找到上面的 <code>&lt;div class="container"&gt;</code> 部分</div>
-            <div class="guide-step" data-num="2.">复制一个 <code>&lt;div class="card"&gt;...&lt;/div&gt;</code> 块</div>
-            <div class="guide-step" data-num="3.">粘贴到最后一个 <code>&lt;/div&gt;</code> 后面</div>
-            <div class="guide-step" data-num="4.">修改里面的网址和标题描述</div>
-            <div class="guide-step" data-num="5.">保存，用Git推送到GitHub，Pages会自动更新</div>
+            <div class="guide-step" data-num="1.">复制上面的一个 <code>&lt;a&gt;</code> 链接块</div>
+            <div class="guide-step" data-num="2.">修改 href 和 data-file 为新文件名（如 post14.html）</div>
+            <div class="guide-step" data-num="3.">修改链接文字</div>
+            <div class="guide-step" data-num="4.">保存推送，时间会自动出现</div>
         </div>
 
     </div>
+
+    <!-- ========================================== -->
+    <!-- 自动时间获取脚本：只需改下面两行，其他别动 -->
+    <!-- ========================================== -->
+    <script>
+        // 改成你的信息（重要！）
+        const GITHUB_USER = 'nymeria79';  // 你的GitHub用户名
+        const GITHUB_REPO = 'anki-viewer';  // 你的仓库名（通常是 用户名.github.io）
+        
+        // 缓存设置（1小时 = 3600000毫秒，避免频繁请求GitHub）
+        const CACHE_MS = 3600000;
+        
+        // 从localStorage读取缓存
+        function getCache() {
+            try {
+                const data = JSON.parse(localStorage.getItem('page_times') || '{}');
+                if (Date.now() - (data.ts || 0) < CACHE_MS) {
+                    return data.files || {};
+                }
+            } catch(e) {}
+            return {};
+        }
+        
+        // 保存到localStorage
+        function saveCache(files) {
+            localStorage.setItem('page_times', JSON.stringify({
+                ts: Date.now(),
+                files: files
+            }));
+        }
+        
+        // 获取单个文件的时间
+        async function fetchTime(filename) {
+            const cache = getCache();
+            if (cache[filename]) return cache[filename];
+            
+            try {
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/commits?path=${filename}&per_page=1`);
+                if (!res.ok) throw new Error('API限制');
+                const data = await res.json();
+                if (data.length > 0) {
+                    const date = new Date(data[0].commit.committer.date);
+                    // 格式：02-02 14:30
+                    const str = `${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+                    cache[filename] = str;
+                    saveCache(cache);
+                    return str;
+                }
+            } catch(e) {
+                console.log('获取失败:', filename);
+            }
+            return null;
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. 处理卡片2的单文件时间
+            const meta2 = document.getElementById('time-post2');
+            if (meta2) {
+                const t = await fetchTime(meta2.getAttribute('data-file'));
+                if (t) meta2.textContent = '最后改动：' + t;
+                else meta2.textContent = '更新：近期';
+            }
+            
+            // 2. 处理卡片3的所有链接，在时间显示区域显示最新时间
+            const fileElements = document.querySelectorAll('[data-file]');
+            let latestTime = '';
+            let latestFile = '';
+            
+            for (let el of fileElements) {
+                const file = el.getAttribute('data-file');
+                if (!file) continue;
+                
+                const time = await fetchTime(file);
+                if (time) {
+                    // 在链接右侧添加时间标签
+                    const span = document.createElement('span');
+                    span.className = 'file-time';
+                    span.textContent = time;
+                    el.appendChild(span);
+                    
+                    // 记录最新的时间用于顶部显示
+                    if (time > latestTime) {
+                        latestTime = time;
+                        latestFile = file;
+                    }
+                }
+            }
+            
+            // 更新卡片3顶部的整体时间
+            const mainMeta = document.getElementById('time-main');
+            if (mainMeta && latestTime) {
+                mainMeta.textContent = `最近更新：${latestFile.replace('.html','')} (${latestTime})`;
+                mainMeta.style.color = 'var(--主色)';
+                mainMeta.style.fontWeight = '500';
+            } else if (mainMeta) {
+                mainMeta.textContent = '最后同步：刚刚';
+            }
+        });
+    </script>
 
 </body>
 </html>
