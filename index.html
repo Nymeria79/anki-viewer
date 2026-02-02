@@ -1,238 +1,285 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <!-- 网页编码，防止中文乱码，必须放第一行 -->
     <meta charset="UTF-8">
-    
-    <!-- 让手机上看的时候大小正常 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>小c的笔记导航</title>
     
     <style>
-        /* ========== 颜色设置区 ========== */
-        /* 你可以改下面这几个颜色，就像换主题一样 */
         :root {
-            --背景色: #f5f5f0;      /* 米白色，像纸一样 */
-            --卡片色: #ffffff;      /* 纯白卡片 */
-            --主色: #5a7a6a;        /* 墨绿色，护眼 */
-            --文字色: #333333;      /* 深灰，比黑色柔和 */
-            --边框色: #e0e0e0;      /* 浅灰边框 */
+            --背景色: #f5f5f0;
+            --卡片色: #ffffff;
+            --主色: #5a7a6a;
+            --文字色: #333333;
+            --边框色: #e0e0e0;
+            --悬停色: #f0f5f3;
         }
 
-        /* ========== 基础样式 ========== */
-        /* *号表示所有元素，把默认的边距清零 */
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box; /* 让padding不撑大盒子，省得算尺寸 */
+            box-sizing: border-box;
         }
 
         body {
             background-color: var(--背景色);
             color: var(--文字色);
-            font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; /* 优先用系统字体，加载快 */
-            line-height: 1.6; /* 行间距1.6倍，像Word里面的1.5倍行距 */
+            font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
             padding: 20px;
         }
 
-        /* ========== 头部区域 ========== */
-        .header {
-            text-align: center; /* 文字居中 */
-            margin-bottom: 40px; /* 和下面内容保持距离 */
-            padding: 20px;
+        /* 单列容器，所有内容垂直堆叠 */
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 统一的卡片框样式 */
+        .card {
+            background: var(--卡片色);
+            border: 1px solid var(--边框色);
+            border-radius: 12px;
+            padding: 28px;
+            transition: box-shadow 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        /* 头部卡片特殊处理（居中） */
+        .header-card {
+            text-align: center;
+            padding: 40px 28px;
+            background: linear-gradient(to bottom, #fafbfa, var(--卡片色));
         }
 
         h1 {
             color: var(--主色);
-            font-size: 28px; /* 标题字号 */
-            margin-bottom: 10px;
+            font-size: 26px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         .subtitle {
-            color: #666;
+            color: #777;
             font-size: 14px;
         }
 
-        /* ========== 笔记卡片网格 ========== */
-        /* 这里用grid布局，就像Excel的表格一样自动排列 */
-        .container {
-            max-width: 800px; /* 最宽800像素，再宽就居中，像公众号一样 */
-            margin: 0 auto; /* 上下0，左右自动（居中） */
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* 自动换行，每列最少250px */
-            gap: 20px; /* 卡片之间的距离 */
-        }
-
-        /* ========== 单个卡片样式 ========== */
-        .card {
-            background: var(--卡片色);
-            border: 1px solid var(--边框色); /* 1像素实线边框 */
-            border-radius: 8px; /* 圆角，像iPhone的APP图标 */
-            padding: 20px;
-            transition: all 0.3s; /* 动画过渡，鼠标放上去不会突兀 */
-            cursor: pointer; /* 鼠标变成手型，提示可点击 */
-        }
-
-        /* 鼠标悬停效果：像卡片浮起来 */
-        .card:hover {
-            transform: translateY(-2px); /* 向上移动2像素 */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 阴影 */
-            border-color: var(--主色);
-        }
-
+        /* 卡片内容区 */
         .card-title {
             font-size: 18px;
-            font-weight: bold; /* 粗体 */
+            font-weight: bold;
             color: var(--主色);
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .card-desc {
             font-size: 14px;
             color: #666;
-            margin-bottom: 15px;
-            line-height: 1.5;
+            margin-bottom: 8px;
+            line-height: 1.6;
         }
 
-        .card-date {
+        .card-meta {
             font-size: 12px;
             color: #999;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        /* ========== 访问按钮 ========== */
+        /* 主按钮（单链接卡片用） */
         .btn {
-            display: inline-block; /* 让a标签可以设置宽高 */
-            padding: 8px 16px;
+            display: inline-block;
+            padding: 10px 24px;
             background-color: var(--主色);
             color: white;
-            text-decoration: none; /* 去掉下划线 */
-            border-radius: 4px;
+            text-decoration: none;
+            border-radius: 6px;
             font-size: 14px;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
         }
 
-        /* 按钮点击效果 */
         .btn:hover {
-            opacity: 0.8; /* 透明度80%，变暗一点 */
+            background-color: #4a6557;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(90,122,106,0.3);
         }
 
-        /* ========== 使用说明区域 ========== */
-        .guide {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #fff;
-            border-left: 4px solid var(--主色); /* 左边一条粗线，像引用块 */
-            border-radius: 4px;
-            font-size: 14px;
-            color: #666;
+        /* ===== 卡片3的多链接网格（解决太丑问题） ===== */
+        .links-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 默认两列 */
+            gap: 10px;
+            margin-top: 16px;
         }
 
-        .guide h3 {
+        .link-item {
+            display: block;
+            padding: 12px 16px;
+            background-color: var(--悬停色);
+            border: 1px solid #e8ebe9;
+            border-radius: 8px;
             color: var(--主色);
-            margin-bottom: 10px;
-            font-size: 16px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .guide code {
+        .link-item:hover {
+            background-color: var(--主色);
+            color: white;
+            border-color: var(--主色);
+            transform: translateY(-2px);
+        }
+
+        /* 使用说明卡片的内部样式 */
+        .guide-card {
+            background: #fcfcfc;
+            border-left: 4px solid var(--主色);
+        }
+
+        .guide-title {
+            color: var(--主色);
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .guide-step {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.8;
+        }
+
+        .guide-step::before {
+            content: attr(data-num);
+            position: absolute;
+            left: 0;
+            color: var(--主色);
+            font-weight: bold;
+        }
+
+        code {
             background: #f0f0f0;
             padding: 2px 6px;
             border-radius: 3px;
-            font-family: monospace; /* 等宽字体，像代码编辑器 */
-            color: #d63384; /* 粉红色代码 */
+            font-family: monospace;
+            color: #d63384;
+            font-size: 13px;
         }
 
-        /* ========== 手机适配 ========== */
-        /* 当屏幕宽度小于600px时（手机竖屏），下面的样式会覆盖上面的 */
+        /* 手机适配：链接变成单列，更好点按 */
         @media (max-width: 600px) {
-            .container {
-                grid-template-columns: 1fr; /* 手机上一列显示，不要并排 */
+            body {
+                padding: 16px;
             }
+            
+            .card {
+                padding: 20px;
+                border-radius: 10px;
+            }
+            
+            .links-grid {
+                grid-template-columns: 1fr; /* 手机单列 */
+            }
+            
             h1 {
-                font-size: 24px;
+                font-size: 22px;
             }
+        }
+
+        /* 分隔线（可选装饰） */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--边框色), transparent);
+            margin: 8px 0;
         }
     </style>
 </head>
 <body>
 
-    <!-- 网页头部 -->
-    <div class="header">
-        <h1>📚 小c的笔记导航</h1>
-        <p class="subtitle">所有学习笔记的传送门，点击卡片即可跳转</p>
-    </div>
-
-    <!-- 笔记卡片容器 -->
     <div class="container">
         
-        <!-- 卡片1：示例，你以后照这个格式复制添加 -->
-        <div class="card" onclick="window.open('https://nymeria79.github.io/my-page/', '_blank')">
+        <!-- 头部也框起来 -->
+        <div class="card header-card">
+            <h1>📚 小c的笔记导航</h1>
+            <p class="subtitle">所有学习笔记的传送门，点击卡片即可跳转</p>
+        </div>
+
+        <!-- 卡片1：个人博客 -->
+        <div class="card">
             <div class="card-title">📝 个人博客</div>
             <div class="card-desc">最初的主页，存放密码保护和综合内容</div>
-            <div class="card-date">更新：2025-02-01</div>
-            <a href="https://nymeria79.github.io/my-page/" class="btn" onclick="event.stopPropagation()">访问</a>
+            <div class="card-meta">更新：2025-02-01</div>
+            <a href="https://nymeria79.github.io/my-page/" target="_blank" class="btn">访问网站</a>
         </div>
 
-        <!-- 卡片2：刚刚做的文字美化工具 -->
-        <div class="card" onclick="window.location.href='post2.html'">
-            <div class="card-title">✨ anki可视化工具</div>
+        <!-- 卡片2：Anki可视化工具 -->
+        <div class="card">
+            <div class="card-title">✨ Anki可视化工具</div>
             <div class="card-desc">粘贴anki笔记自动排版，Claude写的实用工具</div>
-            <div class="card-date">更新：2025-02-02</div>
-            <a href="post2.html" class="btn" onclick="event.stopPropagation()">访问</a>
+            <div class="card-meta">更新：2025-02-02</div>
+            <a href="post2.html" class="btn">打开工具</a>
         </div>
 
-        <!-- 卡片3：Anki知识库 -->
+        <!-- 卡片3：Anki知识库（修复结构+美化布局） -->
+        <div class="card">
             <div class="card-title">🎴 Anki知识库</div>
             <div class="card-desc">这学期Anki内容的可视化图表，预计十多个页面</div>
-            <div class="card-desc">不用于任何临床诊断参考，仅供个人学习</div>
-            <div class="card-date">状态：已完成</div>
-            <!-- 多个跳转按钮 -->
-            <div class="btn-group">
-                <a href="post3.html" class="btn">神经系统与精神疾病名词解释</a>
-                <a href="post4.html" class="btn">神经系统与精神疾病大题</a>
-                <a href="post5.html" class="btn">儿科学名词解释</a>
-                <a href="post6.html" class="btn">儿科学大题</a>
-                <a href="post7.html" class="btn">传染病学名词解释</a>
-                <a href="post8.html" class="btn">传染病学大题</a>
-                <a href="post9.html" class="btn">全科医学概论名词解释</a>
-                <a href="post10.html" class="btn">全科医学概论大题</a>
-                <!-- 继续添加，想加几个加几个 -->
+            <div class="card-desc" style="color: #999; font-size: 13px;">⚠️ 不用于任何临床诊断参考，仅供个人学习</div>
+            <div class="card-meta">状态：已完成</div>
+            
+            <!-- 两列网格布局，告别堆叠 -->
+            <div class="card-desc">大四寒假</div>
+            <div class="links-grid">
+                <a href="post11.html" class="link-item">github·基础名词</a>
+                <a href="post12.html" class="link-item">github·非开发者</a>
+                <a href="post12.html" class="link-item">github·个人博客</a>
+
+            <div class="card-desc">大四下</div>
+            <div class="links-grid">
+                <a href="post3.html" class="link-item">神经系统·名词解释</a>
+                <a href="post4.html" class="link-item">神经系统·大题</a>
+                <a href="post5.html" class="link-item">儿科学·名词解释</a>
+                <a href="post6.html" class="link-item">儿科学·大题</a>
+                <a href="post7.html" class="link-item">传染病学·名词解释</a>
+                <a href="post8.html" class="link-item">传染病学·大题</a>
+                <a href="post9.html" class="link-item">全科医学·名词解释</a>
+                <a href="post10.html" class="link-item">全科医学·大题</a>
             </div>
         </div>
 
-    </div>
+        <div class="divider"></div>
 
-    <!-- 底部使用说明 -->
-    <div class="guide">
-        <h3>🔧 如何添加新的笔记链接？</h3>
-        <p>1. 找到上面的 <code>&lt;div class="container"&gt;</code> 部分（第120行左右）</p>
-        <p>2. 复制一个 <code>&lt;div class="card"&gt;...&lt;/div&gt;</code> 块（从第123行到第129行）</p>
-        <p>3. 粘贴到最后一个 <code>&lt;/div&gt;</code> 后面</p>
-        <p>4. 修改里面的网址（<code>onclick</code>里面的链接和<code>href</code>里面的链接要一致）</p>
-        <p>5. 修改标题、描述、日期</p>
-        <p>6. 保存，用Git推送到GitHub， Pages会自动更新</p>
-    </div>
+        <!-- 使用说明 -->
+        <div class="card guide-card">
+            <div class="guide-title">🔧 如何添加新的笔记链接？</div>
+            <div class="guide-step" data-num="1.">找到上面的 <code>&lt;div class="container"&gt;</code> 部分</div>
+            <div class="guide-step" data-num="2.">复制一个 <code>&lt;div class="card"&gt;...&lt;/div&gt;</code> 块</div>
+            <div class="guide-step" data-num="3.">粘贴到最后一个 <code>&lt;/div&gt;</code> 后面</div>
+            <div class="guide-step" data-num="4.">修改里面的网址和标题描述</div>
+            <div class="guide-step" data-num="5.">保存，用Git推送到GitHub，Pages会自动更新</div>
+        </div>
 
-    <!-- JavaScript部分：很少，只是让点击卡片任何地方都能跳转 -->
-    <script>
-        // 这段代码让点击整个卡片区域都能打开链接，不只是按钮
-        // event.stopPropagation() 是让点击按钮时不触发卡片的点击（避免跳转两次）
-        
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('click', function(e) {
-                // 如果点击的是按钮，就不执行卡片点击（防止重复）
-                if (e.target.tagName === 'A' || e.target.tagName === 'SPAN') return;
-                
-                // 找到卡片里的链接并打开
-                const link = this.querySelector('a');
-                if (link && link.href) {
-                    window.open(link.href, '_blank');
-                }
-            });
-        });
-    </script>
+    </div>
 
 </body>
 </html>
