@@ -380,7 +380,7 @@
             <div class="button-group">
                 <button class="btn-generate" onclick="generateContent()">✨ 生成学习表格</button>
                 <button class="btn-clear" onclick="clearAll()">🗑️ 清空内容</button>
-                <button class="btn-copy" onclick="copyTableHTML()" id="copyBtn" style="display: none;">📋 复制表格HTML</button>
+                <button class="btn-copy" onclick="copyTableHTML()" id="copyBtn" style="display: none;">📋 复制独立网页HTML</button>
             </div>
         </div>
 
@@ -505,10 +505,177 @@
                 return;
             }
             
-            navigator.clipboard.writeText(currentTableHTML).then(() => {
+            // 生成完整的独立HTML文件内容（仅包含表格展示，无输入界面）
+            const fullHTML = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习对照表</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --card-bg: #ffffff;
+            --accent-red: #e63946;
+            --text-dark: #2b2d42;
+            --text-light: #6c757d;
+            --border-color: #e9ecef;
+            --blur-bg: rgba(139, 139, 139, 0.8);
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #f8f5f0 0%, #ede9e4 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #2b2d42 0%, #3a3d52 100%);
+            color: white;
+            padding: 18px 25px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        th:first-child {
+            width: 60px;
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr.title-row {
+            background: #fff8e1;
+            font-weight: 600;
+        }
+
+        tbody tr.title-row:hover {
+            background: #fff3cd;
+        }
+
+        tbody tr.title-row td {
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            color: #856404;
+        }
+
+        td {
+            padding: 18px 20px;
+            text-align: left;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        td:first-child {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-light);
+            width: 60px;
+        }
+
+        .blur-text {
+            background: var(--blur-bg);
+            color: transparent;
+            border-radius: 6px;
+            padding: 2px 8px;
+            user-select: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+        }
+
+        .blur-text:hover {
+            background: transparent;
+            color: var(--accent-red);
+            font-weight: 600;
+            transform: scale(1.05);
+        }
+
+        .answer-text {
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.15) 0%, rgba(230, 57, 70, 0.05) 100%);
+            color: var(--accent-red);
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 6px;
+            border: 2px solid rgba(230, 57, 70, 0.2);
+            display: inline-block;
+        }
+
+        @media (max-width: 968px) {
+            th, td {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-section">
+            <h3 class="section-title">📚 学习对照表</h3>
+            ${currentTableHTML}
+        </div>
+    </div>
+</body>
+</html>`;
+            
+            navigator.clipboard.writeText(fullHTML).then(() => {
                 const btn = document.getElementById('copyBtn');
                 const originalText = btn.innerHTML;
-                btn.innerHTML = '✅ 已复制！';
+                btn.innerHTML = '✅ 已复制完整网页代码！';
                 btn.style.background = '#06d6a0';
                 
                 setTimeout(() => {
