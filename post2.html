@@ -425,12 +425,15 @@
             return parsed;
         }
 
+
         function createPracticeVersion(text) {
-            return text.replace(/\{\{c1::(.*?)\}\}/g, '<span class="blur-text">$1</span>');
+            let processed = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            return processed.replace(/\{\{c1::(.*?)\}\}/g, '<span class="blur-text">$1</span>');
         }
 
         function createAnswerVersion(text) {
-            return text.replace(/\{\{c1::(.*?)\}\}/g, '<span class="answer-text">$1</span>');
+            let processed = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            return processed.replace(/\{\{c1::(.*?)\}\}/g, '<span class="answer-text">$1</span>');
         }
 
         function generateContent() {
