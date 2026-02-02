@@ -3,606 +3,559 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能学习复习系统</title>
+    <title>学习卡片 - 智能复习系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
+        :root {
+            --primary-bg: #f8f5f0;
+            --card-bg: #ffffff;
+            --accent-red: #e63946;
+            --accent-green: #06d6a0;
+            --text-dark: #2b2d42;
+            --text-light: #6c757d;
+            --border-color: #e9ecef;
+            --blur-bg: rgba(139, 139, 139, 0.8);
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #f8f5f0 0%, #ede9e4 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
         }
-        
-        header {
+
+        .header {
             text-align: center;
-            color: white;
             margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease-out;
         }
-        
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
         }
-        
-        header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        .section-title {
-            font-size: 1.3rem;
-            color: #333;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .info-box {
-            background: #fffbeb;
-            border-left: 4px solid #fbbf24;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        
-        .info-box h3 {
-            color: #92400e;
-            margin-bottom: 10px;
+
+        .header p {
+            color: var(--text-light);
             font-size: 1rem;
         }
-        
-        .info-box ul {
-            margin-left: 20px;
-            color: #78350f;
+
+        .input-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .input-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .instruction {
+            background: #fff8e1;
+            border-left: 4px solid #ffd700;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
             line-height: 1.8;
         }
-        
-        .info-box code {
-            background: rgba(0,0,0,0.05);
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: monospace;
-            color: #dc2626;
+
+        .instruction code {
+            background: rgba(230, 57, 70, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent-red);
+            font-weight: 600;
         }
-        
+
         textarea {
             width: 100%;
-            min-height: 200px;
-            padding: 15px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 14px;
+            min-height: 180px;
+            padding: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.95rem;
             line-height: 1.6;
             resize: vertical;
-            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #fafafa;
         }
-        
+
         textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--accent-red);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
         }
-        
+
         .button-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-top: 15px;
-            flex-wrap: wrap;
         }
-        
-        .btn-primary {
-            background: #dc2626;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+
+        button {
             flex: 1;
-            min-width: 140px;
-            justify-content: center;
-        }
-        
-        .btn-primary:hover {
-            background: #b91c1c;
-        }
-        
-        .btn-secondary {
-            background: #e5e7eb;
-            color: #374151;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            flex: 1;
-            min-width: 140px;
-            justify-content: center;
-        }
-        
-        .btn-secondary:hover {
-            background: #d1d5db;
-        }
-        
-        .btn-save {
-            background: #16a34a;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            gap: 5px;
-            flex: 1;
-            min-width: 140px;
-            justify-content: center;
-        }
-        
-        .btn-save:hover {
-            background: #15803d;
-        }
-        
-        .stats {
-            text-align: center;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .stats-number {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #dc2626;
-        }
-        
-        .stats-label {
-            color: #6b7280;
-            margin-top: 5px;
-        }
-        
-        .table-section {
-            background: #1f2937;
-            color: white;
-            padding: 20px;
-            border-radius: 8px 8px 0 0;
-            margin-top: 20px;
-        }
-        
-        .table-container {
-            background: white;
-            border-radius: 0 0 8px 8px;
-            overflow-x: auto;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th {
-            background: #f9fafb;
-            padding: 12px;
-            text-align: left;
+            padding: 12px 24px;
+            font-size: 0.95rem;
             font-weight: 600;
-            color: #374151;
-            border-bottom: 2px solid #e5e7eb;
-        }
-        
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-            color: #4b5563;
-        }
-        
-        tr:hover {
-            background: #f9fafb;
-        }
-        
-        .question-cell {
-            max-width: 500px;
-        }
-        
-        .answer-mask {
-            background: #374151;
-            color: transparent;
-            border-radius: 4px;
-            padding: 2px 8px;
-            cursor: help;
-            transition: all 0.3s;
-            user-select: none;
-            display: inline-block;
-        }
-        
-        .answer-mask:hover {
-            background: #ecfdf5;
-            color: #065f46;
-            user-select: text;
-            font-weight: 500;
-        }
-        
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>🎯 智能学习复习系统</h1>
-            <p>表格对照 · 悬停显示</p>
-        </header>
-
-        <div class="card">
-            <h2 class="section-title">📝 输入学习内容</h2>
-            
-            <div class="info-box">
-                <h3>使用说明：</h3>
-                <ul>
-                    <li>用 <code>{{c1::答案}}</code> 标记需要记忆的内容</li>
-                    <li>标题行：单独一行的文本（不含{{c1::}}）会被识别为标题</li>
-                    <li>题目行：包含{{c1::}}的内容会成为一道题</li>
-                    <li>例如：职业卫生测试（标题） → 1.矽肺最常见的并发症是{{c1::肺结核}}（题目）</li>
-                </ul>
-            </div>
-
-            <textarea id="inputContent" placeholder="在此粘贴或输入你的学习内容...
-
-例如：
-职业卫生测试
-1.矽肺最常见的并发症是{{c1::肺结核}}
-2.控制生产性粉尘危害的最根本措施是{{c1::技术革新和工艺改革}}"></textarea>
-
-            <div class="button-group">
-                <button class="btn-primary" onclick="generateTable()">✨ 生成学习表格</button>
-                <button class="btn-secondary" onclick="clearContent()">🗑️ 清空内容</button>
-                <button class="btn-save" id="saveBtn" onclick="saveStudyPage()">💾 保存复习页</button>
-            </div>
-        </div>
-
-        <div class="card hidden" id="statsCard">
-            <div class="stats">
-                <div class="stats-number" id="questionCount">0</div>
-                <div class="stats-label">总题目数</div>
-            </div>
-        </div>
-
-        <div class="card hidden" id="tableCard">
-            <div class="table-section">
-                📊 学习对照表（鼠标悬停查看答案）
-            </div>
-            <div class="table-container">
-                <table id="studyTable">
-                    <thead>
-                        <tr>
-                            <th style="width: 60%;">题目</th>
-                            <th>答案</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let generatedData = [];
-        let currentTitle = '学习卡片';
-
-        function generateTable() {
-            const content = document.getElementById('inputContent').value.trim();
-            if (!content) {
-                alert('请输入学习内容！');
-                return;
-            }
-
-            const lines = content.split('\n');
-            generatedData = [];
-            let currentCategory = '未分类';
-            let hasTitle = false;
-
-            lines.forEach(line => {
-                line = line.trim();
-                if (!line) return;
-
-                // 检测是否是标题（不含{{c1::}}的独立行）
-                if (!line.includes('{{c1::') && !line.includes('{{c2::')) {
-                    if (!hasTitle) {
-                        currentTitle = line;
-                        hasTitle = true;
-                    }
-                    currentCategory = line;
-                    return;
-                }
-
-                // 解析题目和答案
-                const matches = line.match(/\{\{c1::(.*?)\\}\}/g) || line.match(/\{\{c2::(.*?)\\}\}/g);
-                if (matches) {
-                    let questionText = line;
-                    const answers = [];
-                    
-                    matches.forEach(match => {
-                        const answer = match.replace(/\{\{c1::|\{\{c2::|\}\}/g, '');
-                        answers.push(answer);
-                        questionText = questionText.replace(match, '____');
-                    });
-
-                    generatedData.push({
-                        category: currentCategory,
-                        question: questionText,
-                        answer: answers.join(' / ')
-                    });
-                }
-            });
-
-            if (generatedData.length === 0) {
-                alert('未检测到题目！请使用 {{c1::答案}} 格式标记答案。');
-                return;
-            }
-
-            // 显示统计
-            document.getElementById('questionCount').textContent = generatedData.length;
-            document.getElementById('statsCard').classList.remove('hidden');
-
-            // 生成表格
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            
-            generatedData.forEach((item, index) => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td class="question-cell"><strong>${index + 1}.</strong> ${item.question}</td>
-                    <td><span class="answer-mask">${item.answer}</span></td>
-                `;
-            });
-
-            document.getElementById('tableCard').classList.remove('hidden');
-            document.getElementById('saveBtn').style.display = 'flex';
-            
-            // 滚动到表格
-            document.getElementById('tableCard').scrollIntoView({ behavior: 'smooth' });
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans SC', sans-serif;
         }
 
-        function clearContent() {
-            if (confirm('确定要清空所有内容吗？')) {
-                document.getElementById('inputContent').value = '';
-                document.getElementById('statsCard').classList.add('hidden');
-                document.getElementById('tableCard').classList.add('hidden');
-                document.getElementById('saveBtn').style.display = 'none';
-                generatedData = [];
-            }
+        .btn-generate {
+            background: var(--accent-red);
+            color: white;
+            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
         }
 
-        function saveStudyPage() {
-            if (generatedData.length === 0) {
-                alert('请先生成学习表格！');
-                return;
-            }
+        .btn-generate:hover {
+            background: #d62839;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(230, 57, 70, 0.4);
+        }
 
-            const date = new Date().toLocaleDateString();
-            const tableRows = generatedData.map((item, index) => `
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; max-width: 500px;"><strong>${index + 1}.</strong> ${item.question}</td>
-                    <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">
-                        <span class="answer-mask" style="background: #374151; color: transparent; border-radius: 4px; padding: 2px 8px; cursor: help; transition: all 0.3s; user-select: none; display: inline-block;">${item.answer}</span>
-                    </td>
-                </tr>
-            `).join('');
+        .btn-clear {
+            background: var(--border-color);
+            color: var(--text-dark);
+        }
 
-            const htmlContent = `<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${currentTitle} - 复习模式</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
-            line-height: 1.6;
-            min-height: 100vh;
+        .btn-clear:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+
+        .btn-copy {
+            background: #457b9d;
+            color: white;
+            box-shadow: 0 4px 12px rgba(69, 123, 157, 0.3);
         }
-        h1 { 
-            color: #333; 
-            margin-bottom: 10px;
-            text-align: center;
-            font-size: 1.8rem;
+
+        .btn-copy:hover {
+            background: #3d6a87;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(69, 123, 157, 0.4);
         }
-        .meta {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
-        }
-        .tip {
-            background: #fffbeb;
-            border-left: 4px solid #fbbf24;
-            padding: 10px 15px;
+
+        .stats-bar {
+            display: flex;
+            gap: 15px;
             margin-bottom: 20px;
-            border-radius: 4px;
-            color: #92400e;
-            font-size: 0.9rem;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
         }
+
+        .stat-card {
+            flex: 1;
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-red);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .content-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+            overflow: hidden;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #2b2d42 0%, #3a3d52 100%);
+            color: white;
+            padding: 18px 25px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
+
+        thead {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
         th {
-            background: #f9fafb;
-            padding: 12px;
+            padding: 15px 20px;
             text-align: left;
             font-weight: 600;
-            color: #374151;
-            border-bottom: 2px solid #e5e7eb;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.9rem;
         }
+
+        th:first-child {
+            width: 60px;
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr.title-row {
+            background: #fff8e1;
+            font-weight: 600;
+        }
+
+        tbody tr.title-row:hover {
+            background: #fff3cd;
+        }
+
+        tbody tr.title-row td {
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            color: #856404;
+        }
+
         td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-            vertical-align: top;
-            color: #4b5563;
+            padding: 18px 20px;
+            text-align: left;
+            font-size: 0.95rem;
+            line-height: 1.7;
         }
-        tr:hover {
-            background: #f9fafb;
+
+        td:first-child {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-light);
+            width: 60px;
         }
-        .answer-mask {
-            background: #374151 !important;
-            color: transparent !important;
-            border-radius: 4px;
+
+        .blur-text {
+            background: var(--blur-bg);
+            color: transparent;
+            border-radius: 6px;
             padding: 2px 8px;
-            cursor: help;
-            transition: all 0.3s;
             user-select: none;
-            display: inline-block;
-        }
-        .answer-mask:hover {
-            background: #ecfdf5 !important;
-            color: #065f46 !important;
-            user-select: text;
-            font-weight: 500;
-        }
-        .print-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            font-size: 14px;
-            z-index: 1000;
+            display: inline-block;
+            position: relative;
         }
-        .print-btn:hover {
+
+        .blur-text:hover {
+            background: transparent;
+            color: var(--accent-red);
+            font-weight: 600;
             transform: scale(1.05);
         }
-        @media print {
-            body { background: white; padding: 0; }
-            .container { 
-                box-shadow: none; 
-                max-width: 100%;
-                padding: 20px;
+
+        .answer-text {
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.15) 0%, rgba(230, 57, 70, 0.05) 100%);
+            color: var(--accent-red);
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 6px;
+            border: 2px solid rgba(230, 57, 70, 0.2);
+            display: inline-block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
             }
-            .print-btn { display: none; }
-            .tip { display: none; }
-            .answer-mask { 
-                background: transparent !important;
-                color: #065f46 !important;
-                user-select: text !important;
-                font-weight: 500;
-                padding: 0;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-        @media (max-width: 768px) {
-            .container { padding: 15px; }
-            h1 { font-size: 1.4rem; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 968px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            th, td {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
-    <button class="print-btn" onclick="window.print()">🖨️ 打印/存PDF</button>
     <div class="container">
-        <h1>${currentTitle}</h1>
-        <div class="meta">生成时间：${date} | 共 ${generatedData.length} 题</div>
-        <div class="tip>💡 提示：鼠标悬停在黑色方块上查看答案，点击右上角按钮可打印或保存为PDF</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 60%;">题目</th>
-                    <th>答案</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tableRows}
-            </tbody>
-        </table>
+        <div class="header">
+            <h1>🎯 智能学习复习系统</h1>
+            <p>表格对照 · 悬停显示</p>
+        </div>
+
+        <div class="input-section">
+            <h2>📝 输入学习内容</h2>
+            <div class="instruction">
+                <strong>使用说明：</strong><br>
+                • 用 <code>{{c1::答案}}</code> 标记需要记忆的内容<br>
+                • 标题行：单独一行的文本（不含{{c1::}}）会被识别为标题<br>
+                • 题目行：包含{{c1::}}的内容会成为一道题<br>
+                • 例如：职业卫生测试（标题） → 1.矽肺最常见的并发症是{{c1::肺结核}}（题目）
+            </div>
+            <textarea id="inputText" placeholder="在此粘贴或输入你的学习内容...&#10;&#10;例如：&#10;职业卫生测试&#10;1.矽肺最常见的并发症是{{c1::肺结核}}&#10;2.控制生产性粉尘危害的最根本措施是{{c1::技术革新和工艺改革}}"></textarea>
+            <div class="button-group">
+                <button class="btn-generate" onclick="generateContent()">✨ 生成学习表格</button>
+                <button class="btn-clear" onclick="clearAll()">🗑️ 清空内容</button>
+                <button class="btn-copy" onclick="copyTableHTML()" id="copyBtn" style="display: none;">📋 复制表格HTML</button>
+            </div>
+        </div>
+
+        <div class="stats-bar" id="statsBar" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">总题目数</div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h3 class="section-title">📚 学习对照表</h3>
+            <div id="tableContent">
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    </svg>
+                    <p>输入内容后点击"生成学习表格"开始学习</p>
+                </div>
+            </div>
+        </div>
     </div>
+
     <script>
-        // 记住阅读进度
-        document.addEventListener('DOMContentLoaded', function() {
-            const key = 'progress_' + location.pathname;
-            const saved = localStorage.getItem(key);
-            if(saved) {
+        let questionData = [];
+        let currentTableHTML = '';
+
+        function parseContent(text) {
+            const lines = text.split('\n').filter(line => line.trim());
+            const parsed = [];
+            
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                // 检查是否包含{{c1::}}
+                if (trimmed.includes('{{c1::')) {
+                    parsed.push({ type: 'question', content: trimmed });
+                } else if (trimmed) {
+                    parsed.push({ type: 'title', content: trimmed });
+                }
+            });
+            
+            return parsed;
+        }
+
+        function createPracticeVersion(text) {
+            return text.replace(/\{\{c1::(.*?)\}\}/g, '<span class="blur-text">$1</span>');
+        }
+
+        function createAnswerVersion(text) {
+            return text.replace(/\{\{c1::(.*?)\}\}/g, '<span class="answer-text">$1</span>');
+        }
+
+        function generateContent() {
+            const inputText = document.getElementById('inputText').value;
+            
+            if (!inputText.trim()) {
+                alert('请先输入内容！');
+                return;
+            }
+
+            questionData = parseContent(inputText);
+            
+            if (questionData.filter(item => item.type === 'question').length === 0) {
+                alert('没有检测到题目！请使用 {{c1::答案}} 格式标记答案。');
+                return;
+            }
+
+            renderTable();
+            updateStats();
+            document.getElementById('statsBar').style.display = 'flex';
+        }
+
+        function renderTable() {
+            const tableContent = document.getElementById('tableContent');
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>练习模式（悬停显示答案）</th>
+                            <th>答案对照</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            let questionIndex = 0;
+            
+            questionData.forEach((item, idx) => {
+                if (item.type === 'title') {
+                    html += `
+                        <tr class="title-row">
+                            <td colspan="3">${item.content}</td>
+                        </tr>
+                    `;
+                } else {
+                    questionIndex++;
+                    html += `
+                        <tr>
+                            <td>${questionIndex}</td>
+                            <td>${createPracticeVersion(item.content)}</td>
+                            <td>${createAnswerVersion(item.content)}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            tableContent.innerHTML = html;
+            currentTableHTML = html;
+            document.getElementById('copyBtn').style.display = 'block';
+        }
+
+        function copyTableHTML() {
+            if (!currentTableHTML) {
+                alert('请先生成表格！');
+                return;
+            }
+            
+            navigator.clipboard.writeText(currentTableHTML).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ 已复制！';
+                btn.style.background = '#06d6a0';
+                
                 setTimeout(() => {
-                    const row = document.querySelector('tbody tr:nth-child(' + saved + ')');
-                    if(row) row.scrollIntoView({behavior: 'smooth', block: 'center'});
-                }, 100);
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制');
+            });
+        }
+
+        function updateStats() {
+            const questions = questionData.filter(item => item.type === 'question');
+            const total = questions.length;
+            
+            document.getElementById('totalCount').textContent = total;
+        }
+
+        function clearAll() {
+            if (questionData.length > 0) {
+                if (!confirm('确定要清空所有内容吗？')) {
+                    return;
+                }
+            }
+            
+            document.getElementById('inputText').value = '';
+            document.getElementById('tableContent').innerHTML = `
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    </svg>
+                    <p>输入内容后点击"生成学习表格"开始学习</p>
+                </div>
+            `;
+            document.getElementById('statsBar').style.display = 'none';
+            document.getElementById('copyBtn').style.display = 'none';
+            questionData = [];
+            currentTableHTML = '';
+        }
+
+        // 快捷键支持
+        document.getElementById('inputText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                generateContent();
             }
         });
-        
-        // 保存最后阅读位置
-        let lastScroll = 0;
-        window.addEventListener('scroll', function() {
-            clearTimeout(lastScroll);
-            lastScroll = setTimeout(() => {
-                const rows = document.querySelectorAll('tbody tr');
-                for(let i=0; i<rows.length; i++) {
-                    const rect = rows[i].getBoundingClientRect();
-                    if(rect.top > 0 && rect.top < window.innerHeight/2) {
-                        localStorage.setItem('progress_' + location.pathname, i+1);
-                        break;
-                    }
-                }
-            }, 200);
-        });
-    <\/script>
-</body>
-</html>`;
-
-            // 下载文件
-            const blob = new Blob([htmlContent], {type: 'text/html;charset=utf-8'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${currentTitle}_${date}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            alert('✅ 已保存！\n\n文件已下载到电脑，下次直接双击打开就能复习，无需联网。');
-        }
     </script>
 </body>
 </html>
